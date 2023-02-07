@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Searchbar from "./Searchbar";
 import Loader from "./Loader";
@@ -15,7 +15,7 @@ const App = () => {
   const [page, setPage] = useState(1);
   const [isMoreBtnVisible, setIsMoreBtnVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [imgDetails, setImgDetails] = useState(null);
+  const [imgDetails, setImgDetails] = useState("");
 
 
   useEffect(() => {
@@ -49,10 +49,10 @@ const App = () => {
       setPage(1);
   }
 
-  const showModal = largeImageURL => {
+  const showModal = useCallback(largeImageURL => {
     setImgDetails(largeImageURL);
     setIsModalVisible(true);
-  }
+  },[])
     
   const loadMore = () => {
     setPage(prevPage => prevPage + 1 )
@@ -60,7 +60,7 @@ const App = () => {
     
   const closeModal = () => {
       setIsModalVisible(false);
-      setImgDetails(null);
+      setImgDetails("");
   }
     
     return (

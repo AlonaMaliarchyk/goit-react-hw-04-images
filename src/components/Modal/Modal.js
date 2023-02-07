@@ -6,20 +6,39 @@ import { createPortal } from "react-dom";
 const modalRoot = document.querySelector('#modal-root');
 
 const Modal = ({ close, largeImageURL }) => {
-    const closeModal = ({ target, currentTarget, code }) => {
-        if (target === currentTarget || code === 'Escape') {
-            close();
-        }
+  const modalCloseOnClick =({target, currentTarget})=> {
+    if (target === currentTarget) {
+      close();
+    }
+  };
+
+  useEffect(() => {
+    const modalCloseOnEsc =({code})=> {
+      if (code === 'Escape') {
+        close();
+      }
     };
+ 
+    window.addEventListener('keydown', modalCloseOnEsc);
+
+    return () => {
+      window.removeEventListener('keydown', modalCloseOnEsc);
+    };
+  }, [close]);
+    // const closeModal = ({ target, currentTarget, code }) => {
+    //     if (target === currentTarget || code === 'Escape') {
+    //         close();
+    //     }
+    // };
     
-    useEffect(() => {
-        document.addEventListener("keydown", closeModal);
-        return()=> document.removeEventListener("keydown", closeModal);
-    }, [])
+    // useEffect(() => {
+    //     document.addEventListener("keydown", closeModal);
+    //     return () => document.removeEventListener("keydown", closeModal);
+    // }, [closeModal]);
     
     return (
             createPortal(
-            <div className={css.overlay} onClick={closeModal}>
+            <div className={css.overlay} onClick={modalCloseOnClick}>
             <div className={css.modal}>
             <img src={largeImageURL} alt="largeImageURL" />
             </div>
@@ -29,35 +48,7 @@ const Modal = ({ close, largeImageURL }) => {
         
     )
 }
-// class Modal extends Component {
 
-//     componentDidMount() {
-//         document.addEventListener("keydown",this.closeModal)}
-        
-//     componentWillUnmount() {
-//         document.removeEventListener("keydown", this.closeModal)
-//     }
-//     closeModal = ({ target, currentTarget, code }) => {
-//     if (target === currentTarget || code === 'Escape'){
-//         this.props.close();
-//     }
-//     };
-//     render() {
-//         const { largeImageURL} = this.props;
-//         const { closeModal } = this;
-//         return (
-//             createPortal(
-//             <div className={css.overlay} onClick={closeModal}>
-//             <div className={css.modal}>
-//             <img src={largeImageURL} alt="largeImageURL" />
-//             </div>
-//             </div>,
-//             modalRoot
-//         )
-        
-//     )
-// }
-// }
 Modal.propTypes = {
     largeImageURL: PropTypes.string.isRequired,
     close: PropTypes.func.isRequired,
